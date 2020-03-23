@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:itm="http://java.sun.com/jsf/composite/components"
+	template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="corpo">
+		
+		
+		<div class="row" id="idDivCards">
+							
+		</div>
+		
+		
+		<script>
+			//<![CDATA[
+			
+			var result;
+			var inicializado = false;
+			var tabela_criada = false;
+			var array_graficos = [];
+			var atualiz = false;
+			
+			$(function () {
+				var varCategories = [];
+                  setInterval(function () {
+                  	 executeRest();
+                  }, 1000);
+    		});
+
+		    function executeRest(){
+				$.ajax({
+				    url: '#{request.contextPath}/rest/papel/listar',
+				    dataType: 'json',
+				    async: false,
+				    crossDomain : true,
+				    success: function(data) {
+				        result = data;
+				    }
+				});
+				html = '';
+				for (i = 0; i< result.length; i++) {
+
+					html +=
+						'<div class="col-lg-3 col-md-12 col-sm-12">'+ 
+						'<div class="card social-card share  full-width m-b-10 no-border" data-social="item">'+
+						'<div class="card-header clearfix">'+
+						'<h5 class="text-'+(parseFloat(result[i].porcentagem) < 0?"danger":"success")+' pull-left fs-12">'+result[i].codigo+'<i class="fa fa-circle text-'+(parseFloat(result[i].porcentagem) < 0?"danger":"success")+' fs-11"></i></h5>'+
+						'<div class="pull-right small hint-text">'+result[i].situacao+' <i class="fa fa-comment-o"></i>'+
+						'</div>'+
+						'<div class="clearfix"></div>'+
+						'</div>'+
+						'<div class="card-description">'+
+						'<h5 class="hint-text no-margin">'+result[i].nome+'</h5>'+
+						'<h5 class="small hint-text no-margin">Valor investido:'+parseFloat(result[i].valorTotalInvestido).toFixed(2)+'</h5>'+
+						'<h5 class="small hint-text no-margin">Valor Vender:'+parseFloat(result[i].valorTotalVender).toFixed(2)+'</h5>'+
+						'<hr />'+
+						'<h5 class="small hint-text no-margin">Ultimo:'+parseFloat(result[i].ultimo).toFixed(2)+'</h5>'+
+						'<h5 class="small hint-text no-margin">Valor Compra:'+parseFloat(result[i].valorCompra).toFixed(2)+'</h5>'+
+						'<hr />'+
+						'<h5 class="small hint-text no-margin">Max %:  '+parseFloat(result[i].maxPorcentagem).toFixed(2)+'</h5>'+
+						'<h5 class="small hint-text no-margin">Min %:  '+parseFloat(result[i].minPorcentagem).toFixed(2)+'</h5>'+
+						'<hr />'+
+						'<h3 class="m-b-0">'+parseFloat(result[i].porcentagem).toFixed(2)+'% <span class="text-'+(parseFloat(result[i].porcentagem) < 0?"danger":"success")+'"><br /> R$ '+parseFloat(result[i].ganhoReais).toFixed(2)+'</span>'+
+						'</h3>'+
+						'</div>'+
+						'<div class="card-footer clearfix">'+
+						'<div class="pull-left">Qtd: <span class="text-'+(parseFloat(result[i].porcentagem) < 0?"danger":"success")+'">'+result[i].quantidade+'</span>'+
+						'</div>'+
+						'<div class="pull-right hint-text">'+result[i].dataUltimaCotacaoFormat+'</div>'+
+						'<div class="clearfix"></div>'+
+						'</div>'+
+						'</div>'+
+						'</div>';	
+				}	
+				
+				$('#idDivCards').html(html);
+				console.log(result);
+				
+			}
+		  //]]>
+		</script>	
+		
+		
+
+			
+	</ui:define>
+
+
+</ui:composition>
